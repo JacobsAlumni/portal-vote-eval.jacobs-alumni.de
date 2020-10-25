@@ -1,0 +1,12 @@
+.ok {
+    color: green;
+}
+
+.results {
+    height: 20em;
+    width: 95%;
+    resize: none;
+
+    user-select: all;
+    -moz-user-select: all;
+}
