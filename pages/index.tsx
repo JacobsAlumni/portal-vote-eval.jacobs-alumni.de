@@ -26,6 +26,8 @@ class Copyable extends React.Component<{children: string}> {
   }
 }
 
+const badGoogleFormMessage = "Detected more than a single question in the Google Form. \nIt says 'A vote is a single multiple choice question asked to all eligible alumni'. \nPlease go and evaluate the vote by hand and RTFM next time. \n";
+
 export default class extends React.Component {
   state: State = {
     tokens: undefined,
@@ -57,10 +59,21 @@ export default class extends React.Component {
 
     const text = await files[0].text();
     const lines = text.split("\n").slice(1).map(l => l.trim()).filter(s => s !== "");
+    let badResultsCSV = false;
     const votes = lines.map(l => {
       const [time, token, vote] = l.split(",");
+      if (l.split(",").length != 3) {
+        badResultsCSV = true;
+      }
       return {time, token, vote};
-    })
+    });
+
+    if (badResultsCSV) {
+      alert(badGoogleFormMessage);
+      this.setState({results: badGoogleFormMessage});
+      return;
+    }
+
     this.setState({votes}, this.handleEval);
   }
 
